@@ -1,4 +1,3 @@
-import com.sun.javafx.geom.Vec3d;
 import com.sun.javafx.geom.Vec3f;
 
 import javax.imageio.ImageIO;
@@ -215,10 +214,10 @@ public class Main {
     }
     public static float[] setRGBAf (Color cor){
         float[] rgbaf = new float[4];
-        rgbaf[0] = (cor.getRed() * 100/255);
-        rgbaf[1] = (cor.getGreen() * 100/255);
-        rgbaf[2] = (cor.getBlue() * 100/255);
-        rgbaf[3] = (cor.getAlpha() * 100/255);
+        rgbaf[0] = (cor.getRed() * 100/255.0f);
+        rgbaf[1] = (cor.getGreen() * 100/255.0f);
+        rgbaf[2] = (cor.getBlue() * 100/255.0f);
+        rgbaf[3] = (cor.getAlpha() * 100/255.0f);
         return rgbaf;
     }
 
@@ -274,7 +273,6 @@ public class Main {
                             distance = vector3aux.length();
                             outColor = new Color((int)(vector3paleta.x), (int)(vector3paleta.y), (int)(vector3paleta.z));
                             out.setRGB(x, y, outColor.getRGB());
-
                         }
                     }
                 }
@@ -292,6 +290,7 @@ public class Main {
         Vec3f vector3paleta = new Vec3f();
         Vec3f vector3rgb = new Vec3f();
         Vec3f vector3aux = new Vec3f();
+        Vec3f vector3Dith = new Vec3f();
         double distance = 0;
 
         for (int y = 0; y < src.getHeight(); y++) {
@@ -299,6 +298,7 @@ public class Main {
 
                 Color cor1 = new Color(src.getRGB(x, y));
                 Color outColor;
+                Color corD;
                 vector3rgb.set((float) (cor1.getRed()), (float) (cor1.getGreen()), (float) (cor1.getBlue()));
                 distance = 0;
 
@@ -312,9 +312,42 @@ public class Main {
                     else {
                         if(distance >= vector3aux.length()) {
                             distance = vector3aux.length();
-                            outColor = new Color((int)(vector3paleta.x), (int)(vector3paleta.y), (int)(vector3paleta.z));
-                            out.setRGB(x, y, outColor.getRGB());
+                            //outColor = new Color((int)(vector3paleta.x), (int)(vector3paleta.y), (int)(vector3paleta.z));
+                            //out.setRGB(x, y, outColor.getRGB());
 
+                            //dithering:
+                            if(x>0 && x<src.getWidth()-1 && y<src.getHeight()-1) {
+                                corD = new Color(src.getRGB(x + 1, y));
+                                vector3Dith.set((float) (corD.getRed()), (float) (corD.getGreen()), (float) (corD.getBlue()));
+                                outColor = new Color(saturate((int) (vector3Dith.x + distance * 7 / 16)),
+                                        saturate((int) (vector3paleta.y + distance * 7 / 16)),
+                                        saturate((int) (vector3paleta.z + distance * 7 / 16)));
+                                out.setRGB(x + 1, y, outColor.getRGB());
+
+
+                                corD = new Color(src.getRGB(x - 1, y + 1));
+                                vector3Dith.set((float) (corD.getRed()), (float) (corD.getGreen()), (float) (corD.getBlue()));
+                                outColor = new Color(saturate((int) (vector3Dith.x + distance * 3 / 16)),
+                                        saturate((int) (vector3paleta.y + distance * 3 / 16)),
+                                        saturate((int) (vector3paleta.z + distance * 3 / 16)));
+                                out.setRGB(x - 1, y + 1, outColor.getRGB());
+
+
+                                corD = new Color(src.getRGB(x, y + 1));
+                                vector3Dith.set((float) (corD.getRed()), (float) (corD.getGreen()), (float) (corD.getBlue()));
+                                outColor = new Color(saturate((int) (vector3Dith.x + distance * 5 / 16)),
+                                        saturate((int) (vector3paleta.y + distance * 5 / 16)),
+                                        saturate((int) (vector3paleta.z + distance * 5 / 16)));
+                                out.setRGB(x, y + 1, outColor.getRGB());
+
+
+                                corD = new Color(src.getRGB(x + 1, y + 1));
+                                vector3Dith.set((float) (corD.getRed()), (float) (corD.getGreen()), (float) (corD.getBlue()));
+                                outColor = new Color(saturate((int) (vector3Dith.x + distance * 1 / 16)),
+                                        saturate((int) (vector3paleta.y + distance * 1 / 16)),
+                                        saturate((int) (vector3paleta.z + distance * 1 / 16)));
+                                out.setRGB(x + 1, y + 1, outColor.getRGB());
+                            }
                         }
                     }
                 }
@@ -449,20 +482,23 @@ public class Main {
 
         //*/
 
-        /* //ATIVIDADE  */ //<TIRE OU COLOQUE O ASTERISK
+        /* //ATIVIDADE 1  */ //<TIRE OU COLOQUE O ASTERISK
         BufferedImage img8 = ImageIO.read(new File(PATH, "cor\\puppy.png"));
 
         BufferedImage ega = turnEGA(img8);
         ImageIO.write(ega, "png",
                 new File("egaImg.png"));
 
-//        BufferedImage fsdither = fsDither(ega);
-//        ImageIO.write(fsdither, "png",
-//                new File("fsditherImg.jpg"));
+        BufferedImage fsEGAdither = fsDither(ega);
+        ImageIO.write(fsEGAdither, "png",
+                new File("fsEGAditherImg.jpg"));
+        BufferedImage fsdither = fsDither(img8);
+        ImageIO.write(fsdither, "png",
+                new File("fsditherImg.jpg"));
 
         //*/
 
-        /* //DESAFIO  / //<TIRE OU COLOQUE O ASTERISK
+        /* //DESAFIO 1 / //<TIRE OU COLOQUE O ASTERISK
         BufferedImage img9 = ImageIO.read(new File(PATH, "cor\\puppy.png"));
 
         BufferedImage linha2 = linha(img9, 100, 1, 1, 1, Color.GREEN);
