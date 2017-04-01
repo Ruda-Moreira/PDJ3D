@@ -251,7 +251,7 @@ public class Main {
         Vec3f vector3paleta = new Vec3f();
         Vec3f vector3rgb = new Vec3f();
         Vec3f vector3aux = new Vec3f();
-        double distance = 0;
+        float distance = 0;
 
         for (int y = 0; y < src.getHeight(); y++) {
             for (int x = 0; x < src.getWidth(); x++) {
@@ -290,9 +290,10 @@ public class Main {
         Vec3f vector3paleta = new Vec3f();
         Vec3f vector3rgb = new Vec3f();
         Vec3f vector3aux = new Vec3f();
+        Vec3f vector3auxD = new Vec3f();
         Vec3f vector3Dith = new Vec3f();
 
-        double distance;
+        float distance;
 
         Color cor1;
         Color outColor;
@@ -321,6 +322,7 @@ public class Main {
                             distance = vector3aux.length();
                             outColor = new Color((int)(vector3paleta.x), (int)(vector3paleta.y), (int)(vector3paleta.z));
                             out.setRGB(x, y, outColor.getRGB());
+                            vector3auxD.sub(vector3rgb, vector3paleta);
                         }
                     }
                 }
@@ -330,33 +332,33 @@ public class Main {
 
                     corD = new Color(src.getRGB(x + 1, y));
                     vector3Dith.set((float) (corD.getRed()), (float) (corD.getGreen()), (float) (corD.getBlue()));
-                    outColor = new Color(saturate((int) (vector3Dith.x + vector3aux.x * 7.0f / 16.0f)),
-                                         saturate((int) (vector3Dith.y + vector3aux.y * 7.0f / 16.0f)),
-                                         saturate((int) (vector3Dith.z + vector3aux.z * 7.0f / 16.0f)));
+                    outColor = new Color(saturate((int) (vector3Dith.x + (vector3auxD.x * 7.0f / 16.0f))),
+                                         saturate((int) (vector3Dith.y + (vector3auxD.y * 7.0f / 16.0f))),
+                                         saturate((int) (vector3Dith.z + (vector3auxD.z * 7.0f / 16.0f))));
                     src.setRGB(x + 1, y, outColor.getRGB());
 
 
                     corD = new Color(src.getRGB(x - 1, y + 1));
                     vector3Dith.set((float) (corD.getRed()), (float) (corD.getGreen()), (float) (corD.getBlue()));
-                    outColor = new Color(saturate((int) (vector3Dith.x + vector3aux.x * 3.0f / 16.0f)),
-                                         saturate((int) (vector3Dith.y + vector3aux.y * 3.0f / 16.0f)),
-                                         saturate((int) (vector3Dith.z + vector3aux.z * 3.0f / 16.0f)));
+                    outColor = new Color(saturate((int) (vector3Dith.x + (vector3auxD.x * 3.0f / 16.0f))),
+                                         saturate((int) (vector3Dith.y + (vector3auxD.y * 3.0f / 16.0f))),
+                                         saturate((int) (vector3Dith.z + (vector3auxD.z * 3.0f / 16.0f))));
                     src.setRGB(x - 1, y + 1, outColor.getRGB());
 
 
                     corD = new Color(src.getRGB(x, y + 1));
                     vector3Dith.set((float) (corD.getRed()), (float) (corD.getGreen()), (float) (corD.getBlue()));
-                    outColor = new Color(saturate((int) (vector3Dith.x + vector3aux.x * 5.0f / 16.0f)),
-                                         saturate((int) (vector3Dith.y + vector3aux.y * 5.0f / 16.0f)),
-                                         saturate((int) (vector3Dith.z + vector3aux.z * 5.0f / 16.0f)));
+                    outColor = new Color(saturate((int) (vector3Dith.x + (vector3auxD.x * 5.0f / 16.0f))),
+                                         saturate((int) (vector3Dith.y + (vector3auxD.y * 5.0f / 16.0f))),
+                                         saturate((int) (vector3Dith.z + (vector3auxD.z * 5.0f / 16.0f))));
                     src.setRGB(x, y + 1, outColor.getRGB());
 
 
                     corD = new Color(src.getRGB(x + 1, y + 1));
                     vector3Dith.set((float) (corD.getRed()), (float) (corD.getGreen()), (float) (corD.getBlue()));
-                    outColor = new Color(saturate((int) (vector3Dith.x + vector3aux.x * 1.0f / 16.0f)),
-                                         saturate((int) (vector3Dith.y + vector3aux.y * 1.0f / 16.0f)),
-                                         saturate((int) (vector3Dith.z + vector3aux.z * 1.0f / 16.0f)));
+                    outColor = new Color(saturate((int) (vector3Dith.x + (vector3auxD.x * 1.0f / 16.0f))),
+                                         saturate((int) (vector3Dith.y + (vector3auxD.y * 1.0f / 16.0f))),
+                                         saturate((int) (vector3Dith.z + (vector3auxD.z * 1.0f / 16.0f))));
                     src.setRGB(x + 1, y + 1, outColor.getRGB());
                 }
 
@@ -497,9 +499,6 @@ public class Main {
         ImageIO.write(ega, "png",
                 new File("egaImg.png"));
 
-        BufferedImage fsEGAdither = fsDither(ega);
-        ImageIO.write(fsEGAdither, "png",
-                new File("fsEGAditherImg.jpg"));
         BufferedImage fsdither = fsDither(img8);
         ImageIO.write(fsdither, "png",
                 new File("fsditherImg.jpg"));

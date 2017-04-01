@@ -16,6 +16,8 @@ public class Main {
     }
 
 
+
+    //aula:
     public BufferedImage negativo(BufferedImage img){
         BufferedImage out = new BufferedImage(img.getWidth(), img.getHeight(), 
                 BufferedImage.TYPE_INT_RGB);
@@ -42,25 +44,28 @@ public class Main {
         BufferedImage out = new BufferedImage(img.getWidth(), img.getHeight(),
                 BufferedImage.TYPE_INT_RGB);
 
+        Color cor;
+
         for (int y = 0; y < img.getHeight(); y++) {
             for (int x = 0; x < img.getWidth(); x++) {
+
                 //kernel:
-                int corK = 0;
+                int kR = 0;
+                int kG = 0;
+                int kB = 0;
                 for (int i = 0; i < kernel.length; i++) {
                     for (int j = 0; j < kernel.length; j++) {
                         if(x>0 && x < img.getWidth() - 1 && y > 0 && y < img.getHeight() - 1) {
-                            corK += (kernel[j][i]*img.getRGB(x-1+j, y-1+i));
+                            cor = new Color(img.getRGB(x-1+j, y-1+i));
+                            kR += (int)(kernel[j][i]*cor.getRed());
+                            kG += (int)(kernel[j][i]*cor.getGreen());
+                            kB += (int)(kernel[j][i]*cor.getBlue());
+
                         }
                     }
                 }
-                Color newPixel = new Color(corK);
 
-                /*int r = (int)saturate(pixel.getRed());
-                int g = (int)saturate(pixel.getGreen());
-                int b = (int)saturate(pixel.getBlue());
-
-                Color newPixel = new Color(r, g, b);*/
-
+                Color newPixel = new Color(saturate(kR), saturate(kG), saturate(kB));
                 out.setRGB(x, y, newPixel.getRGB());
             }
 
@@ -70,17 +75,23 @@ public class Main {
     public BufferedImage formP_S(BufferedImage imgx, BufferedImage imgy){
         BufferedImage out = new BufferedImage(imgx.getWidth(), imgx.getHeight(),
                 BufferedImage.TYPE_INT_RGB);
-        int corx = 0;
-        int cory = 0;
-        int cor = 0;
+        Color corx;
+        Color cory;
+
+        int corR;
+        int corG;
+        int corB;
+
         for (int y = 0; y < imgx.getHeight(); y++) {
             for (int x = 0; x < imgx.getWidth(); x++) {
 
-                corx = imgx.getRGB(x, y);
-                cory = imgy.getRGB(x, y);
-                cor = (int)(Math.sqrt(Math.pow(corx,2)+Math.pow(cory,2)));
+                corx = new Color(imgx.getRGB(x, y));
+                cory = new Color(imgy.getRGB(x, y));
+                corR = (int)(Math.sqrt(Math.pow(corx.getRed(),2)+Math.pow(cory.getRed(),2)));
+                corG = (int)(Math.sqrt(Math.pow(corx.getGreen(),2)+Math.pow(cory.getGreen(),2)));
+                corB = (int)(Math.sqrt(Math.pow(corx.getBlue(),2)+Math.pow(cory.getBlue(),2)));
 
-                Color newPixel = new Color(cor);
+                Color newPixel = new Color(saturate(corR), saturate(corG), saturate(corB));
                 out.setRGB(x, y, newPixel.getRGB());
             }
         }
@@ -179,6 +190,91 @@ public class Main {
         };
     }
 
+    //exercício 2
+    public BufferedImage playH(BufferedImage img, float change){
+        BufferedImage out = new BufferedImage(img.getWidth(), img.getHeight(),
+                BufferedImage.TYPE_INT_RGB);
+        Color cor;
+        float[] hsb;
+        int rgb;
+        for (int y = 0; y < img.getHeight(); y++) {
+            for (int x = 0; x < img.getWidth(); x++) {
+                cor = new Color(img.getRGB(x, y));
+
+                hsb = Color.RGBtoHSB(cor.getRed(), cor.getGreen(), cor.getBlue(), null);
+                hsb[0] *= change;
+                rgb = Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]);
+
+                Color newPixel = new Color(rgb);
+                out.setRGB(x, y, newPixel.getRGB());
+            }
+
+        }
+        return out;
+    }
+    public BufferedImage playS(BufferedImage img, float change){
+        BufferedImage out = new BufferedImage(img.getWidth(), img.getHeight(),
+                BufferedImage.TYPE_INT_RGB);
+        Color cor;
+        float[] hsb;
+        int rgb;
+        for (int y = 0; y < img.getHeight(); y++) {
+            for (int x = 0; x < img.getWidth(); x++) {
+                cor = new Color(img.getRGB(x, y));
+
+                hsb = Color.RGBtoHSB(cor.getRed(), cor.getGreen(), cor.getBlue(), null);
+                hsb[1] *= change;
+                rgb = Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]);
+
+                Color newPixel = new Color(rgb);
+                out.setRGB(x, y, newPixel.getRGB());
+            }
+
+        }
+        return out;
+    }
+    public BufferedImage playV(BufferedImage img, float change){
+        BufferedImage out = new BufferedImage(img.getWidth(), img.getHeight(),
+                BufferedImage.TYPE_INT_RGB);
+        Color cor;
+        float[] hsb;
+        int rgb;
+        for (int y = 0; y < img.getHeight(); y++) {
+            for (int x = 0; x < img.getWidth(); x++) {
+                cor = new Color(img.getRGB(x, y));
+
+                hsb = Color.RGBtoHSB(cor.getRed(), cor.getGreen(), cor.getBlue(), null);
+                hsb[2] *= change;
+                rgb = Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]);
+
+                Color newPixel = new Color(rgb);
+                out.setRGB(x, y, newPixel.getRGB());
+            }
+
+        }
+        return out;
+    }
+
+    //exercício 3
+
+
+    //ATIVIDADE 2
+    public BufferedImage pixelate(BufferedImage img, int pixelsize){
+        BufferedImage out = new BufferedImage(img.getWidth(), img.getHeight(),
+                BufferedImage.TYPE_INT_RGB);
+        int px, py;
+        for (int y = 0; y < img.getHeight(); y++) {
+            for (int x = 0; x < img.getWidth(); x++) {
+                px = (x/pixelsize)*pixelsize;
+                py = (y/pixelsize)*pixelsize;
+                out.setRGB(x, y, img.getRGB(px,py));
+            }
+        }
+        return out;
+    }
+
+    //DESAFIO 2
+
     public void run() throws IOException {
         //MUDAR PATH DO DISCO DO PEN DRIVE:
         String PATH = "D:\\PUCPR\\3º\\PDJ3D\\img\\img";
@@ -191,8 +287,7 @@ public class Main {
                 new File("negImg.jpg"));
         //*/
 
-
-        /* //Exercc�cio 1  */ //<TIRE OU COLOQUE O ASTERISK
+        /* //Exercício 1  / //<TIRE OU COLOQUE O ASTERISK
         BufferedImage img2 = ImageIO.read(new File(PATH, "cor\\turtle.jpg"));
         BufferedImage img3 = ImageIO.read(new File(PATH, "gray\\lizard.png"));
 
@@ -299,45 +394,44 @@ public class Main {
         ImageIO.write(conv2, "png",
                 new File("lizardprewittImg.jpg"));
 
+        //*/
+
+        /* //Exercício 2  / //<TIRE OU COLOQUE O ASTERISK
+        BufferedImage img4 = ImageIO.read(new File(PATH, "cor\\turtle.jpg"));
+        BufferedImage img5 = ImageIO.read(new File(PATH, "cor\\turtle.jpg"));
+        BufferedImage img6 = ImageIO.read(new File(PATH, "cor\\turtle.jpg"));
+
+        BufferedImage pH = playH(img4, 0.5f);
+        ImageIO.write(pH, "jpg", new File("playHImg.jpg"));
+        BufferedImage pS = playS(img4, 0.5f);
+        ImageIO.write(pS, "jpg", new File("playSImg.jpg"));
+        BufferedImage pV = playV(img4, 0.5f);
+        ImageIO.write(pV, "jpg", new File("playVImg.jpg"));
+
+        //*/
+
+        /* //Exercício 3  / //<TIRE OU COLOQUE O ASTERISK
+        BufferedImage img7 = ImageIO.read(new File(PATH, "cor\\turtle.jpg"));
+        BufferedImage img8 = ImageIO.read(new File(PATH, "cor\\turtle.jpg"));
+        BufferedImage img9 = ImageIO.read(new File(PATH, "cor\\turtle.jpg"));
+        BufferedImage img10 = ImageIO.read(new File(PATH, "cor\\turtle.jpg"));
 
 
         //*/
 
-        /* //Exercc�cio 2  / //<TIRE OU COLOQUE O ASTERISK
-        BufferedImage img9 = ImageIO.read(new File(PATH, "cor\\puppy.png"));
+        /* //ATIVIDADE 2  */ //<TIRE OU COLOQUE O ASTERISK
+        BufferedImage img11 = ImageIO.read(new File(PATH, "cor\\turtle.jpg"));
 
-        BufferedImage linha2 = linha(img9, 100, 1, 1, 1, Color.GREEN);
-        BufferedImage linha1 = linha(img9, 1, 1, 1, 100, Color.GREEN);
-        ImageIO.write(linha1, "png",
-                new File("linha1Img.jpg"));
-        ImageIO.write(linha2, "png",
-                new File("linha2Img.jpg"));
-        //*/
-
-        /* //Exercc�cio 3  / //<TIRE OU COLOQUE O ASTERISK
-        BufferedImage img9 = ImageIO.read(new File(PATH, "cor\\puppy.png"));
-
-        BufferedImage linha2 = linha(img9, 100, 1, 1, 1, Color.GREEN);
-        BufferedImage linha1 = linha(img9, 1, 1, 1, 100, Color.GREEN);
-        ImageIO.write(linha1, "png",
-                new File("linha1Img.jpg"));
-        ImageIO.write(linha2, "png",
-                new File("linha2Img.jpg"));
-        //*/
-
-        /* //ATIVIDADE 2  / //<TIRE OU COLOQUE O ASTERISK
-        BufferedImage img9 = ImageIO.read(new File(PATH, "cor\\puppy.png"));
-
-        BufferedImage linha2 = linha(img9, 100, 1, 1, 1, Color.GREEN);
-        BufferedImage linha1 = linha(img9, 1, 1, 1, 100, Color.GREEN);
-        ImageIO.write(linha1, "png",
-                new File("linha1Img.jpg"));
-        ImageIO.write(linha2, "png",
-                new File("linha2Img.jpg"));
+        BufferedImage pixel= pixelate(img11, 6);
+        ImageIO.write(pixel, "jpg",
+                new File("pixelImg.jpg"));
+        BufferedImage pixelsharp = convolve(pixel, sharpening());
+        ImageIO.write(pixelsharp, "jpg",
+                new File("pixelsharpImg.jpg"));
         //*/
 
         /* //DESAFIO 2  / //<TIRE OU COLOQUE O ASTERISK
-        BufferedImage img9 = ImageIO.read(new File(PATH, "cor\\puppy.png"));
+        BufferedImage img9 = ImageIO.read(new File(PATH, "cor\\metroid1.jpg"));
 
         BufferedImage linha2 = linha(img9, 100, 1, 1, 1, Color.GREEN);
         BufferedImage linha1 = linha(img9, 1, 1, 1, 100, Color.GREEN);
