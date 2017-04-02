@@ -23,7 +23,7 @@ public class Main {
         for (int y = 0; y < img.getHeight(); y++) {
             for (int x = 0; x < img.getWidth(); x++) {
              cor = new Color(img.getRGB(x, y));
-             total[cor.getRed()] = total[cor.getRed()] == 0 ? 1 : total[cor.getRed()]+1;
+             total[cor.getRed()]+=1;
             }
         }
         return total;
@@ -31,8 +31,9 @@ public class Main {
 
     int[] acumHistogram(int[] histogram){
         int[] acum = new int[256];
-        for (int i = 0; i < histogram.length; i++) {
-            acum[i] = i == 0 ? histogram[i] : acum[i-1]+histogram[i];
+        acum[0] = histogram[0];
+        for (int i = 1; i < histogram.length; i++) {
+            acum[i] = acum[i-1]+histogram[i];
         }
         return acum;
     }
@@ -48,33 +49,27 @@ public class Main {
         int[] histacum = acumHistogram(total);
         Color cor;
 
-        int hmin = 0;
-        for (int i = 255; i >= 0; i--) {
-            if(i==0 || histacum[i] == 1) {
-                hmin = histacum[i];
+        float hmin = 0.0f;
+        for (int i = 0; i < total.length; i++) {
+            if(total[i] != 0) {
+                hmin = (float)i;
                 break;
             }
         }
 
-        int pix = histacum[255];
+        int pix = img.getHeight()*img.getWidth();
         int tons = 256;
+        int[] newhue = new int[256];
+        for (int i = 0; i < histacum.length; i++) {
+            newhue[i] = Math.round(((histacum[i]-hmin)/(pix-hmin)) * (tons-1));
+        }
 
-//        int[] newhue = new int[256];
-//        for (int i = 0; i <= 255; i++) {
-//            newhue[i] = Math.round((histacum[i]-hmin)/(pix-hmin)) * (tons-1);
-//        }
-
-        //int corR;
-        int newhue;
+        int corR;
         for (int y = 0; y < img.getHeight(); y++) {
             for (int x = 0; x < img.getWidth(); x++) {
                 cor = new Color(img.getRGB(x, y));
-                //corR = newhue[cor.getRed()];
-                //cor = new Color(corR, corR, corR);
-
-                newhue = Math.round((histacum[cor.getRed()]-hmin)/(pix-hmin)) * (tons-1);
-                cor = new Color(newhue, newhue, newhue);
-
+                corR = newhue[cor.getRed()];
+                cor = new Color(corR, corR, corR);
                 out.setRGB(x, y, cor.getRGB());
             }
         }
