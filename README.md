@@ -9,7 +9,10 @@ Working on IntelliJ IDEA Community
 
 >Open PDJ3D as a project to commit+push.
 
+aula1:
 - Desafio 1: Floyd-Steinberg (ver at. 1)
 - Desafio 2: Linha
+aula2:
 - Desafio 3: Bloom
+aula3:
 - Desafio 4: Equalize HSV
