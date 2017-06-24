@@ -492,7 +492,7 @@ public class Main {
 
         //*/
 
-        /* //ATIVIDADE 1  */ //<TIRE OU COLOQUE O ASTERISK
+        /* //ATIVIDADE 1 E DESAFIO 1 */ //<TIRE OU COLOQUE O ASTERISK
         BufferedImage img8 = ImageIO.read(new File(PATH, "cor\\puppy.png"));
 
         BufferedImage ega = turnEGA(img8);
@@ -505,7 +505,7 @@ public class Main {
 
         //*/
 
-        /* //DESAFIO 1 / //<TIRE OU COLOQUE O ASTERISK
+        /* //DESAFIO 2 */ //<TIRE OU COLOQUE O ASTERISK
         BufferedImage img9 = ImageIO.read(new File(PATH, "cor\\puppy.png"));
 
         BufferedImage linha2 = linha(img9, 100, 1, 1, 1, Color.GREEN);

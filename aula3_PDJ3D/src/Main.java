@@ -76,6 +76,9 @@ public class Main {
         return out;
     }
 
+    //DESAFIO
+
+
 
     public void run() throws IOException, ArithmeticException {
 
@@ -120,15 +123,15 @@ public class Main {
 
         //*/
 
-        /* //DESAFIO 3 / //<TIRE OU COLOQUE O ASTERISK
-        BufferedImage img9 = ImageIO.read(new File(PATH, "cor\\puppy.png"));
+        /* //DESAFIO 4 */ //<TIRE OU COLOQUE O ASTERISK
+        BufferedImage img7 = ImageIO.read(new File(PATH, "cor\\puppy.png"));
 
-        BufferedImage linha2 = linha(img9, 100, 1, 1, 1, Color.GREEN);
-        BufferedImage linha1 = linha(img9, 1, 1, 1, 100, Color.GREEN);
-        ImageIO.write(linha1, "png",
-                new File("linha1Img.jpg"));
-        ImageIO.write(linha2, "png",
-                new File("linha2Img.jpg"));
+        BufferedImage equaSet = equalizeSaturation(img7);
+        BufferedImage equaBri = equalizeBrightness(img7);
+        ImageIO.write(equaSet, "png",
+                new File("laraSet.png"));
+        ImageIO.write(equaBri, "png",
+                new File("laraBri.png"));
 
         //*/
 

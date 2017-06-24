@@ -15,8 +15,6 @@ public class Main {
         
     }
 
-
-
     //aula:
     public BufferedImage negativo(BufferedImage img){
         BufferedImage out = new BufferedImage(img.getWidth(), img.getHeight(), 
@@ -274,6 +272,53 @@ public class Main {
     }
 
     //DESAFIO 2
+    public BufferedImage bloomSize(BufferedImage img, int sizeBlur){
+        BufferedImage out = new BufferedImage(img.getWidth(), img.getHeight(),
+                BufferedImage.TYPE_INT_RGB);
+        Color cor;
+        float[] hsb;
+        int rgb;
+        for (int y = 0; y < img.getHeight(); y++) {
+            for (int x = 0; x < img.getWidth(); x++) {
+                cor = new Color(img.getRGB(x, y));
+
+                hsb = Color.RGBtoHSB(cor.getRed(), cor.getGreen(), cor.getBlue(), null);
+                if(hsb[2] >= 0.8f) {
+                    rgb = Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]);
+                    Color newPixel = new Color(rgb);
+                    out.setRGB(x, y, newPixel.getRGB());
+                }
+            }
+        }
+        for (int i = 0; i < sizeBlur; i++) {
+            out = convolve(out, suavCruz());
+        }
+        return out;
+    }
+    public BufferedImage bloomFinal(BufferedImage img, BufferedImage img1, BufferedImage img2, BufferedImage img3, BufferedImage img4){
+        BufferedImage out = new BufferedImage(img.getWidth(), img.getHeight(),
+                BufferedImage.TYPE_INT_RGB);
+        Color cor, cor1, cor2, cor3, cor4;
+        int r,g,b;
+        for (int y = 0; y < img.getHeight(); y++) {
+            for (int x = 0; x < img.getWidth(); x++) {
+                cor = new Color(img.getRGB(x, y));
+                cor1 = new Color(img1.getRGB(x, y));
+                cor2 = new Color(img2.getRGB(x, y));
+                cor3 = new Color(img3.getRGB(x, y));
+                cor4 = new Color(img4.getRGB(x, y));
+
+                r = saturate(cor.getRed() + cor1.getRed() + cor2.getRed() + cor3.getRed() + cor4.getRed());
+                g = saturate(cor.getGreen() + cor1.getGreen() + cor2.getGreen() + cor3.getGreen() + cor4.getGreen());
+                b = saturate(cor.getBlue() + cor1.getBlue() + cor2.getBlue() + cor3.getBlue() + cor4.getBlue());
+
+                Color newPixel = new Color(r, g, b);
+                out.setRGB(x, y, newPixel.getRGB());
+            }
+
+        }
+        return out;
+    }
 
     public void run() throws IOException {
         //MUDAR PATH DO DISCO DO PEN DRIVE:
@@ -430,17 +475,30 @@ public class Main {
                 new File("pixelsharpImg.jpg"));
         //*/
 
-        /* //DESAFIO 2  / //<TIRE OU COLOQUE O ASTERISK
-        BufferedImage img9 = ImageIO.read(new File(PATH, "cor\\metroid1.jpg"));
+        /* //DESAFIO 3 */ //<TIRE OU COLOQUE O ASTERISK
+        BufferedImage img12 = ImageIO.read(new File(PATH, "cor\\metroid2.jpg"));
 
-        BufferedImage linha2 = linha(img9, 100, 1, 1, 1, Color.GREEN);
-        BufferedImage linha1 = linha(img9, 1, 1, 1, 100, Color.GREEN);
-        ImageIO.write(linha1, "png",
-                new File("linha1Img.jpg"));
-        ImageIO.write(linha2, "png",
-                new File("linha2Img.jpg"));
+        BufferedImage bloom1 = bloomSize(img12,5);
+        ImageIO.write(bloom1, "jpg",
+                new File("bloom5.jpg"));
+
+        BufferedImage bloom2 = bloomSize(img12,11);
+        ImageIO.write(bloom2, "jpg",
+                new File("bloom11.jpg"));
+
+        BufferedImage bloom3 = bloomSize(img12,21);
+        ImageIO.write(bloom3, "jpg",
+                new File("bloom21.jpg"));
+
+        BufferedImage bloom4 = bloomSize(img12,41);
+        ImageIO.write(bloom4, "jpg",
+                new File("bloom41.jpg"));
+
+        bloom4 = bloomFinal(img12, bloom1, bloom2, bloom3, bloom4);
+        ImageIO.write(bloom4, "jpg",
+                new File("bloomFinal.jpg"));
+
         //*/
-
 
         System.out.println("pronto");
     }
